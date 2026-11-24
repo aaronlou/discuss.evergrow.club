@@ -1,0 +1,22 @@
+node_modules
+.next
+out
+build
+coverage
+
+# local runtime state
+data/
+.pnpm-store/
+.tmp-npm-cache/
+tmp/
+
+# env
+.env
+.env.local
+.env.*.local
+
+# misc
+.DS_Store
+*.log
+next-env.d.ts
+tsconfig.tsbuildinfo
