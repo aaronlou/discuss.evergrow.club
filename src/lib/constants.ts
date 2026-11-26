@@ -57,6 +57,14 @@ export const PROVIDER_PRESETS: ProviderPreset[] = [
     models: ['deepseek-flash', 'deepseek-v4-pro'],
   },
   {
+    id: 'qwen',
+    label: '通义千问',
+    note: '阿里云百炼 / 兼容模式',
+    kind: 'openai',
+    baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
+    models: ['qwen4-max', 'qwen3.8-max', 'qwen3.7-plus', 'qwen3.5-flash', 'qwen-plus'],
+  },
+  {
     id: 'hunyuan',
     label: '混元 Hy4',
     note: '腾讯云 TokenHub',
@@ -105,20 +113,20 @@ export const PROVIDER_PRESETS: ProviderPreset[] = [
     models: ['claude-sonnet-4-5', 'claude-opus-4-1', 'claude-haiku-4-5'],
   },
   {
-    id: 'moonshot',
+    id: 'kimi',
     label: 'Kimi / 月之暗面',
-    note: 'OpenAI 兼容',
+    note: 'K3.1 Pro',
     kind: 'openai',
     baseUrl: 'https://api.moonshot.cn/v1',
-    models: ['kimi-k2-0711-preview', 'moonshot-v1-8k'],
+    models: ['kimi-k3.1-pro', 'kimi-k3.1-pro-highspeed', 'kimi-k3'],
   },
   {
-    id: 'qwen',
-    label: '通义千问',
-    note: '阿里云百炼兼容模式',
+    id: 'kimi-tokenhub',
+    label: 'Kimi（TokenHub）',
+    note: '已有腾讯云 Key',
     kind: 'openai',
-    baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
-    models: ['qwen-plus', 'qwen-max', 'qwen-turbo'],
+    baseUrl: 'https://tokenhub.tencentmaas.com/v1',
+    models: ['kimi-k3.1-pro', 'kimi-k3.1-pro-highspeed', 'kimi-k3'],
   },
   {
     id: 'ollama',
@@ -137,6 +145,7 @@ export const PROVIDER_PRESETS: ProviderPreset[] = [
     models: [],
   },
 ];
+
 
 
 export const STARTER_PROMPTS = [

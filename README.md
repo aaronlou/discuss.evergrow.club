@@ -8,7 +8,7 @@
 
 ## 功能
 
-- **配置化模型接入**：优先内置 DeepSeek、腾讯混元 Hy4、小米 MiMo、智谱 GLM 四家国产模型预设；同时支持 OpenAI 兼容协议（OpenAI、Kimi、通义、Ollama、自建网关…）与 Anthropic 原生协议。支持测试连接、拉取模型列表、Key 掩码显示。
+- **配置化模型接入**：优先内置 DeepSeek、通义千问、Kimi、腾讯混元 Hy4、小米 MiMo、智谱 GLM 六家国产模型预设；同时支持 OpenAI 兼容协议（OpenAI、Ollama、自建网关…）与 Anthropic 原生协议。支持测试连接、拉取模型列表、Key 掩码显示。
 - **多智能体群聊**：每个角色独立的人设、模型与温度；流式逐字输出；后面的角色能看到前面角色刚说的话。
 - **用户控制参与权**：创建房间时选角；房间内随时开关「发言 / 旁听」；`@` 点名只让指定角色回应；随时停止一轮。
 - **继续讨论**：不发言，直接点「再聊一轮」，让角色就刚才的话题继续交锋。
@@ -28,6 +28,8 @@
 <p align="center">
   <img src="docs/screenshots/mobile-room.png" width="320" alt="移动端群聊" />
 </p>
+
+![在接入页选择通义千问预设](docs/screenshots/provider-qwen.png)
 
 ## 快速开始
 
@@ -53,7 +55,7 @@ pnpm dev
 ### 接入真实模型
 
 1. 打开左侧「接入」页 →「添加接入」；
-2. 选择预设（DeepSeek / 混元 Hy4 / 小米 MiMo / 智谱 GLM / OpenAI / Anthropic / Kimi / 通义 / Ollama）或「自定义」；
+2. 选择预设（DeepSeek / 通义千问 / Kimi / 混元 Hy4 / 小米 MiMo / 智谱 GLM / OpenAI / Anthropic / Ollama）或「自定义」；
 3. 填写 Base URL 与 API Key，点「测试连接」；
 4. 到「角色」页编辑角色，选择新的接入与模型。
 
@@ -62,9 +64,12 @@ pnpm dev
 ```bash
 cp .env.example .env
 # DEEPSEEK_API_KEY=
+# DASHSCOPE_API_KEY=     # 阿里云百炼（通义千问）
+# DASHSCOPE_BASE_URL=    # 可选：业务空间专属地址
 # TOKENHUB_API_KEY=      # 腾讯云 TokenHub，用于 hy4 / hy4-flash
-# MIMO_API_KEY=          # 小米 MiMo 开放平台
+# MIMO_API_KEY=          # 小米 MiMo：tp- 走 Token Plan，sk- 走按量付费
 # ZHIPU_API_KEY=         # 智谱开放平台（GLM）
+# MOONSHOT_API_KEY=      # Kimi / 月之暗面（K3.1 Pro）
 # OPENAI_API_KEY=
 # ANTHROPIC_API_KEY=
 ```
@@ -74,18 +79,26 @@ cp .env.example .env
 | 模型 | 协议 / 网关 | Base URL | 推荐 model | Key 环境变量 |
 | --- | --- | --- | --- | --- |
 | DeepSeek | OpenAI 兼容 | `https://api.deepseek.com` | `deepseek-flash` / `deepseek-v4-pro` | `DEEPSEEK_API_KEY` |
+| 通义千问 | 阿里云百炼兼容模式 | `https://dashscope.aliyuncs.com/compatible-mode/v1` | `qwen4-max` / `qwen3.8-max` / `qwen3.7-plus` / `qwen3.5-flash` | `DASHSCOPE_API_KEY` |
 | 腾讯混元 Hy4 | 腾讯云 TokenHub | `https://tokenhub.tencentmaas.com/v1` | `hy4` / `hy4-flash` | `TOKENHUB_API_KEY` |
 | 小米 MiMo（按量） | OpenAI 兼容 | `https://api.xiaomimimo.com/v1` | `mimo-v2.6-flash` / `mimo-v2.6-pro` | `MIMO_API_KEY`（`sk-`） |
 | 小米 MiMo（Token Plan） | OpenAI 兼容 | 以 Token Plan 控制台专属地址为准 | `mimo-v2.6-flash` / `mimo-v2.6-pro` | `MIMO_API_KEY`（`tp-`）+ `MIMO_BASE_URL` |
 | 智谱 GLM | OpenAI 兼容 | `https://open.bigmodel.cn/api/paas/v4` | `glm-5.1` / `glm-5` / `glm-4.7` | `ZHIPU_API_KEY` |
+| Kimi / 月之暗面 | OpenAI 兼容 | `https://api.moonshot.cn/v1` | `kimi-k3.1-pro` / `kimi-k3` | `MOONSHOT_API_KEY` |
 
 几点说明：
 
 - DeepSeek 的旧模型名 `deepseek-chat` / `deepseek-reasoner` 已于 2026-07-24 停用，请使用 `deepseek-flash` / `deepseek-v4-pro`。
 - 混元 Hy4 通过腾讯云 TokenHub 接入，Key 在 TokenHub 控制台创建；TokenHub 同一个 Key 也可按“自定义接入”调用它聚合的其他模型。
+- Kimi 的旧模型名 `kimi-latest` / `kimi-k2` 已逐步停用，请使用 `kimi-k3.1-pro` / `kimi-k3`。如果已有腾讯云 TokenHub Key，也可以直接用「Kimi（TokenHub）」预设，Base URL 为 TokenHub 的兼容地址。
+
+Kimi 加入后的四模型真实圆桌：
+
+![Kimi 四模型圆桌](docs/screenshots/kimi-round.png)
+- 通义千问使用阿里云百炼的 OpenAI 兼容模式；`qwen4-max` 是 2026-11 的新旗舰。若你使用新版 MaaS/业务空间专属域名，把 `DASHSCOPE_BASE_URL` 设为控制台给出的地址即可。
 - 小米 MiMo 有两种互不通用的凭据：按量付费 `sk-` 走 `api.xiaomimimo.com`；Token Plan `tp-` 必须使用控制台「Token Plan」页给出的**专属 Base URL**（中国通用地址为 `https://token-plan-cn.xiaomimimo.com/v1`，但以控制台为准），两者不能混用。
 - GLM 的 Base URL 必须带 `/api/paas/v4`，不要只填 `https://open.bigmodel.cn`。若账户余额不足，可使用免费模型 `glm-4-flash` 先体验。
-- 兼容性实测（2026-11）：DeepSeek `deepseek-flash`、腾讯混元 `hy4-flash`、智谱 `glm-4-flash` 已完成真实流式对话验证；GLM-5 系列需要账户余额。MiMo 的 Token Plan Key 必须配控制台专属 Base URL。
+- 兼容性实测（2026-11）：DeepSeek `deepseek-flash`、腾讯混元 `hy4-flash`、智谱 `glm-4-flash` 已完成真实流式对话验证；Kimi `kimi-k3.1-pro` 通过 TokenHub 调用验证；GLM-5 系列需要账户余额。通义千问端点已确认可达，等待 DashScope Key 做真实调用。MiMo 的 Token Plan Key 必须配控制台专属 Base URL。
 
 ## 怎么用
 
@@ -141,6 +154,7 @@ src/
 - 会话使用 **SSE**（`text/event-stream`）而不是 WebSocket：单向流式、断线可感知、实现简单。
 - 房间级内存锁防止同一房间并发开两轮；`AbortController` 贯穿 fetch → 模型请求 → 落库，停止时保存部分内容。
 - 数据库是单文件 SQLite（WAL）。`node:sqlite` 让项目不需要 `better-sqlite3` 之类的原生扩展。
+- OpenAI 兼容适配器遇到 400 时会自动去掉 `temperature` 重试一次，并记住该 `provider + model`。Kimi K3.1 Pro 经 TokenHub 调用时就不接受这个字段。
 - API Key 只在服务端使用；浏览器拿到的 Provider 只有 `hasKey` 与末四位掩码。
 
 ### 数据模型
@@ -174,7 +188,7 @@ SSE 事件：`user_message`、`round_start`、`agent_start`、`delta`、`agent_e
 ## 开发与验证
 
 ```bash
-pnpm test        # 27 个单元测试：SSE 解析、Prompt、发言选择、适配器、数据层
+pnpm test        # 30 个单元测试：SSE 解析、Prompt、发言选择、适配器、数据层
 pnpm typecheck
 pnpm build
 ```

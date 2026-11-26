@@ -42,7 +42,7 @@ export function ProvidersStudio({ initialProviders }: { initialProviders: Public
 
   const modelCount = new Set(providers.flatMap((provider) => provider.models)).size;
   const onlyMock = providers.every((provider) => provider.kind === 'mock');
-  const quickPresets = ['deepseek', 'hunyuan', 'mimo', 'zhipu']
+  const quickPresets = ['deepseek', 'qwen', 'kimi', 'hunyuan', 'mimo', 'zhipu']
     .map((id) => PROVIDER_PRESETS.find((item) => item.id === id))
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
@@ -284,7 +284,7 @@ export function ProvidersStudio({ initialProviders }: { initialProviders: Public
               演示模式不消耗额度，但回复是本地模板。接入真实模型后，角色的设定才会真正生效。
             </p>
           </div>
-          <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {quickPresets.map((item) => (
               <button
                 key={item.id}

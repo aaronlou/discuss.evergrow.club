@@ -109,6 +109,39 @@ function envProviders(): SeedProvider[] {
     });
   }
 
+  const qwenKey =
+    process.env.DASHSCOPE_API_KEY || process.env.QWEN_API_KEY || process.env.ALIYUN_API_KEY;
+  if (qwenKey) {
+    list.push({
+      id: 'prov-qwen',
+      name: '通义千问',
+      kind: 'openai',
+      baseUrl:
+        process.env.DASHSCOPE_BASE_URL?.trim() ||
+        process.env.QWEN_BASE_URL?.trim() ||
+        'https://dashscope.aliyuncs.com/compatible-mode/v1',
+      apiKey: qwenKey,
+      models: ['qwen4-max', 'qwen3.8-max', 'qwen3.7-plus', 'qwen3.5-flash', 'qwen-plus'],
+      defaultModel: 'qwen4-max',
+    });
+  }
+
+  const kimiKey = process.env.MOONSHOT_API_KEY || process.env.KIMI_API_KEY;
+  if (kimiKey) {
+    list.push({
+      id: 'prov-kimi',
+      name: 'Kimi / 月之暗面',
+      kind: 'openai',
+      baseUrl:
+        process.env.MOONSHOT_BASE_URL?.trim() ||
+        process.env.KIMI_BASE_URL?.trim() ||
+        'https://api.moonshot.cn/v1',
+      apiKey: kimiKey,
+      models: ['kimi-k3.1-pro', 'kimi-k3.1-pro-highspeed', 'kimi-k3'],
+      defaultModel: 'kimi-k3.1-pro',
+    });
+  }
+
   if (process.env.OPENAI_API_KEY) {
     list.push({
       id: 'prov-openai',

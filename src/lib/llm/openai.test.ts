@@ -64,6 +64,41 @@ describe('streamOpenAi', () => {
     expect(events.some((event) => event.type === 'finish' && event.reason === 'stop')).toBe(true);
   });
 
+  it('retries without temperature when a provider rejects it', async () => {
+    const bodies: Array<Record<string, unknown>> = [];
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (_url: string, init: RequestInit) => {
+        const body = JSON.parse(String(init.body)) as Record<string, unknown>;
+        bodies.push(body);
+        if (body.temperature !== undefined) {
+          return new Response(
+            JSON.stringify({ error: { message: 'the request was rejected by MaaS' } }),
+            { status: 400, headers: { 'content-type': 'application/json' } },
+          );
+        }
+        return responseFrom([
+          'data: {"choices":[{"delta":{"content":"降级成功"}}]}\n\n',
+          'data: [DONE]\n\n',
+        ]);
+      }),
+    );
+
+    const events = await collect(
+      makeRequest({
+        provider: { ...provider, id: 'prov-kimi-test', name: 'Kimi (TokenHub)' },
+        model: 'kimi-k3.1-pro',
+        temperature: 0.8,
+      }),
+    );
+    expect(events.filter((event) => event.type === 'text').map((event) => event.text).join('')).toBe(
+      '降级成功',
+    );
+    expect(bodies).toHaveLength(2);
+    expect('temperature' in bodies[0]).toBe(true);
+    expect('temperature' in bodies[1]).toBe(false);
+  });
+
   it('surfaces provider errors with a helpful message', async () => {
     vi.stubGlobal(
       'fetch',

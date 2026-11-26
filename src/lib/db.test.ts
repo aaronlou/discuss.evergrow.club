@@ -18,6 +18,7 @@ import {
 import {
   createProvider,
   deleteProvider,
+  listProviders,
   toPublicProvider,
 } from './repo/providers';
 import {
@@ -51,6 +52,37 @@ describe('data layer', () => {
     const views = listAgentViews(db);
     expect(views[0].provider.kind).toBe('mock');
     expect(views[0].provider.hasKey).toBe(false);
+  });
+
+  it('seeds a Qwen provider from DASHSCOPE_API_KEY', () => {
+    const previous = process.env.DASHSCOPE_API_KEY;
+    process.env.DASHSCOPE_API_KEY = 'sk-test-qwen';
+    try {
+      db = openDatabase(':memory:');
+      const qwen = listProviders(db).find((provider) => provider.id === 'prov-qwen');
+      expect(qwen).toBeDefined();
+      expect(qwen?.name).toBe('通义千问');
+      expect(qwen?.baseUrl).toContain('dashscope.aliyuncs.com');
+      expect(qwen?.models).toContain('qwen4-max');
+    } finally {
+      if (previous === undefined) delete process.env.DASHSCOPE_API_KEY;
+      else process.env.DASHSCOPE_API_KEY = previous;
+    }
+  });
+
+  it('seeds a Kimi provider from MOONSHOT_API_KEY', () => {
+    const previous = process.env.MOONSHOT_API_KEY;
+    process.env.MOONSHOT_API_KEY = 'sk-test-kimi';
+    try {
+      db = openDatabase(':memory:');
+      const kimi = listProviders(db).find((provider) => provider.id === 'prov-kimi');
+      expect(kimi).toBeDefined();
+      expect(kimi?.baseUrl).toBe('https://api.moonshot.cn/v1');
+      expect(kimi?.models).toContain('kimi-k3.1-pro');
+    } finally {
+      if (previous === undefined) delete process.env.MOONSHOT_API_KEY;
+      else process.env.MOONSHOT_API_KEY = previous;
+    }
   });
 
   it('creates rooms, stores messages and preserves history when an agent leaves', () => {
